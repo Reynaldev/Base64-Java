@@ -1,12 +1,11 @@
 package com.ReynDev.Base64Java;
 
-import jdk.jfr.Unsigned;
-
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Main implements Runnable, ActionListener {
@@ -15,13 +14,17 @@ public class Main implements Runnable, ActionListener {
     private JButton btnEncode, btnDecode;
     private JMenuBar menuBar;
     private JMenu menuFile, menuHelp;
-    private JMenuItem miFileOpen, miFileExit;
+    private JMenuItem miFileOpen, miFileExport, miFileExit;
     private JMenuItem miHelpAbout;
     private JTextArea taInput, taOutput;
 
     // Action commands
     private String encodeCmd = "EncodeCommand";
     private String decodeCmd = "DecodeCommand";
+    private String openCmd = "OpenCommand";
+    private String exportCmd = "ExportCommand";
+    private String exitCmd = "ExitCommand";
+    private String aboutCmd = "AboutCommand";
 
     private int width = 640;
     private int height = 480;
@@ -51,9 +54,18 @@ public class Main implements Runnable, ActionListener {
 
         // File menu items
         miFileOpen = new JMenuItem("Read from file...");
+        miFileOpen.setActionCommand(openCmd);
+        miFileOpen.addActionListener(this);
         menuFile.add(miFileOpen);
 
+        miFileExport = new JMenuItem("Export");
+        miFileExport.setActionCommand(exportCmd);
+        miFileExport.addActionListener(this);
+        menuFile.add(miFileExport);
+
         miFileExit = new JMenuItem("Exit");
+        miFileExit.setActionCommand(exitCmd);
+        miFileExit.addActionListener(this);
         menuFile.add(miFileExit);
 
         // Help menu
@@ -62,6 +74,8 @@ public class Main implements Runnable, ActionListener {
 
         // Help menu items
         miHelpAbout = new JMenuItem("About");
+        miHelpAbout.setActionCommand(aboutCmd);
+        miHelpAbout.addActionListener(this);
         menuHelp.add(miHelpAbout);
 
         // Panel
@@ -134,6 +148,85 @@ public class Main implements Runnable, ActionListener {
         // Decode
         if (e.getActionCommand().equals(decodeCmd)) {
             decode(taInput.getText());
+        }
+
+        // Read
+        if (e.getActionCommand().equals(openCmd)) {
+            // Instantiate JFileChooser
+            JFileChooser fc = new JFileChooser();
+
+            // Set extension filter
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "Text Document", "txt"
+            );
+            fc.addChoosableFileFilter(filter);
+            fc.setFileFilter(filter);
+
+            // Skip if the user cancelled the operation
+            int returnVal = fc.showOpenDialog(null);
+            if (returnVal == JFileChooser.CANCEL_OPTION)
+                return;
+
+            // Skip if the file is not found
+            File file = fc.getSelectedFile();
+            if (!file.exists()) {
+                JOptionPane.showMessageDialog(
+                        null, "File not found.",
+                        "Error", JOptionPane.ERROR_MESSAGE
+                );
+
+                return;
+            }
+
+            try {
+                // Instantiate FileReader and BufferedReader
+                FileReader fr = new FileReader(file);
+                BufferedReader br = new BufferedReader(fr);
+
+                // Set taInput and encode
+                taInput.read(br, file);
+                encode(taInput.getText());
+
+                // CLose
+                br.close();
+                fr.close();
+            } catch (FileNotFoundException ex) {
+                System.out.println("FileNotFoundException: " + ex);
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                System.out.println("IOException: " + ex);
+                throw new RuntimeException(ex);
+            }
+        }
+
+        // Export
+        if (e.getActionCommand().equals(exportCmd)) {
+            JFileChooser fc = new JFileChooser();
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "Text Document", ".txt"
+            );
+            fc.addChoosableFileFilter(filter);
+            fc.setFileFilter(filter);
+
+            int returnVal = fc.showSaveDialog(null);
+            if (returnVal == JFileChooser.CANCEL_OPTION)
+                return;
+
+            String[] exts = filter.getExtensions();
+            String filepath = fc.getSelectedFile() + "." + exts[0];
+
+            try {
+                File file = new File(filepath);
+                FileWriter fw = new FileWriter(file);
+                BufferedWriter br = new BufferedWriter(fw);
+
+
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
