@@ -17,6 +17,7 @@ public class Main implements Runnable, ActionListener {
     private JMenuItem miFileOpen, miFileExport, miFileExit;
     private JMenuItem miHelpAbout;
     private JTextArea taInput, taOutput;
+    private JScrollPane spInput, spOutput;
 
     // Action commands
     private String encodeCmd = "EncodeCommand";
@@ -85,15 +86,20 @@ public class Main implements Runnable, ActionListener {
 
         // Input text area
         taInput = new JTextArea();
+        spInput = new JScrollPane(
+                taInput,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        );
 
         ctr.fill = GridBagConstraints.BOTH;
         ctr.insets = new Insets(12, 12, 12, 12);
         ctr.weightx = 1;
-        ctr.weighty = 0.5;
+        ctr.weighty = 1;
         ctr.gridwidth = 2;
         ctr.gridx = 0;
         ctr.gridy = 0;
-        panel.add(taInput, ctr);
+        panel.add(spInput, ctr);
 
         // Encode button
         btnEncode = new JButton("Encode");
@@ -122,16 +128,23 @@ public class Main implements Runnable, ActionListener {
 
         // Output text area
         taOutput = new JTextArea();
+        taOutput.setEditable(false);
+
+        spOutput = new JScrollPane(
+                taOutput,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+        );
 
         ctr = new GridBagConstraints();
         ctr.fill = GridBagConstraints.BOTH;
         ctr.insets = new Insets(12, 12, 12, 12);
         ctr.weightx = 1;
-        ctr.weighty = 0.5;
+        ctr.weighty = 1;
         ctr.gridwidth = 2;
         ctr.gridx = 0;
         ctr.gridy = 2;
-        panel.add(taOutput, ctr);
+        panel.add(spOutput, ctr);
 
         frame.pack();
         frame.setVisible(true);
@@ -241,8 +254,18 @@ public class Main implements Runnable, ActionListener {
             }
         }
 
+        // Exit
         if (e.getActionCommand().equals(exitCmd)) {
             System.exit(0);
+        }
+
+        // About
+        if (e.getActionCommand().equals(aboutCmd)) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Base64 Encoder and Decoder made by ReynDev\nWritten in Java",
+                    "About Base64 Encoder and Decoder", JOptionPane.INFORMATION_MESSAGE
+            );
         }
     }
 
