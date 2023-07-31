@@ -177,28 +177,27 @@ public class Main implements Runnable, ActionListener {
         // Create a StringBuilder to store a sequence of binary
         StringBuilder binaries = new StringBuilder();
         for (Integer integer : charCode) {
-            StringBuilder b = new StringBuilder();  // Binary
+            StringBuilder s = new StringBuilder();  // Binary
             int n = integer;                        // Elements at index
-            int r = 0;                              // Remainder
 
             // Calculate each ASCII code into binary
             while (n > 0) {
-                r = n % 2;
+                int r = n % 2;                      // Remainder
                 n /= 2;
 
-                b.append(r);
+                s.append(r);
             }
 
             // If length is less than 8; add a 0
-            while (b.length() < 8) {
-                b.append(0);
+            while (s.length() < 8) {
+                s.append(0);
             }
 
             // Reverse string
-            b.reverse();
+            s.reverse();
 
             // Append to the binaries StringBuilder
-            binaries.append(b);
+            binaries.append(s);
         }
 
         // Slice the binaries StringBuilder with a length of 6 and insert it into an ArrayList
@@ -231,8 +230,8 @@ public class Main implements Runnable, ActionListener {
 
         // Convert each code into a char
         StringBuilder out = new StringBuilder();
-        for (Integer integer : charCode) {
-            out.append(codeToChar(integer));
+        for (Integer i : charCode) {
+            out.append(codeToChar(i));
         }
 
         // Add padding
@@ -256,7 +255,71 @@ public class Main implements Runnable, ActionListener {
             charCode.add(charToCode(ch));
         }
 
-        System.out.println(charCode);
+        // Create a StringBuilder to store a sequence of binary
+        StringBuilder binaries = new StringBuilder();
+        for (Integer integer : charCode) {
+            StringBuilder s = new StringBuilder();  // Binary
+            int n = integer;                        // Elements at index
+
+            // Calculate each ASCII code into binary
+            while (n > 0) {
+                int r = n % 2;                      // Remainder
+                n /= 2;
+
+                s.append(r);
+            }
+
+            // If length is less than 6; add a 0
+            while (s.length() < 6) {
+                s.append(0);
+            }
+
+            // Reverse string
+            s.reverse();
+
+            // Append to the binaries StringBuilder
+            binaries.append(s);
+        }
+
+        // Slice the binaries StringBuilder with a length of 8 and insert it into an ArrayList
+        ArrayList<String> bits = new ArrayList<>();
+        while (binaries.length() > 0) {
+            while (binaries.length() < 8) {
+                binaries.append(0);
+            }
+
+            String b = binaries.substring(0, 8);
+            binaries.delete(0, 8);
+            bits.add(b);
+        }
+
+        // Clear charCode ArrayList so we can use it later
+        charCode.clear();
+
+        // Calculate the binary and put it into the charCode ArrayList
+        for (String t : bits) {
+            int n = 0;
+
+            for (int j = t.length() - 1; j >= 0; j--) {
+                int p = Integer.parseInt(String.valueOf(t.charAt(j)));
+                int q = t.length() - j - 1;
+                n += Math.pow(2, q) * p;
+            }
+
+            if (n == 0)
+                continue;
+
+            charCode.add(n);
+        }
+
+        // Convert each code into a char
+        StringBuilder out = new StringBuilder();
+        for (int i = 0; i < charCode.size(); i++) {
+            char c = (char) charCode.get(i).intValue();
+            out.append(c);
+        }
+
+        taOutput.setText(out.toString());
     }
 
     public static void main(String[] args) {
