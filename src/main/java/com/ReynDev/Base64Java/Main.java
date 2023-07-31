@@ -240,6 +240,10 @@ public class Main implements Runnable, ActionListener {
                 throw new RuntimeException(ex);
             }
         }
+
+        if (e.getActionCommand().equals(exitCmd)) {
+            System.exit(0);
+        }
     }
 
     public char codeToChar(int c) {
@@ -419,8 +423,8 @@ public class Main implements Runnable, ActionListener {
 
         // Convert each code into a char
         StringBuilder out = new StringBuilder();
-        for (int i = 0; i < charCode.size(); i++) {
-            char c = (char) charCode.get(i).intValue();
+        for (Integer i : charCode) {
+            char c = (char) i.intValue();
             out.append(c);
         }
 
