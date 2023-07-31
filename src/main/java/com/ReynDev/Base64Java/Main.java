@@ -149,18 +149,22 @@ public class Main implements Runnable, ActionListener {
     }
 
     public void encode(String text) {
+        // Create an array to store ASCII code
         ArrayList<Integer> charCode = new ArrayList<>();
 
+        // Store individual ASCII code into the array
         for (int code : text.getBytes()) {
             charCode.add(code);
         }
 
+        // Create a StringBuilder to store a sequence of binary
         StringBuilder binaries = new StringBuilder();
         for (Integer integer : charCode) {
             StringBuilder b = new StringBuilder();  // Binary
             int n = integer;                        // Elements at index
             int r = 0;                              // Remainder
 
+            // Calculate each ASCII code into binary
             while (n > 0) {
                 r = n % 2;
                 n /= 2;
@@ -168,16 +172,19 @@ public class Main implements Runnable, ActionListener {
                 b.append(r);
             }
 
+            // If length is less than 8; add a 0
             while (b.length() < 8) {
                 b.append(0);
             }
 
+            // Reverse string
             b.reverse();
 
+            // Append to the binaries StringBuilder
             binaries.append(b);
         }
 
-
+        // Slice the binaries StringBuilder with a length of 6 and insert it into an ArrayList
         ArrayList<String> bits = new ArrayList<>();
         while (binaries.length() > 0) {
             while (binaries.length() < 6) {
@@ -189,8 +196,10 @@ public class Main implements Runnable, ActionListener {
             bits.add(b);
         }
 
+        // Clear charCode ArrayList so we can use it later
         charCode.clear();
 
+        // Calculate the binary and put it into the charCode ArrayList
         for (String t : bits) {
             int n = 0;
 
@@ -203,15 +212,18 @@ public class Main implements Runnable, ActionListener {
             charCode.add(n);
         }
 
+        // Convert each code into a char
         StringBuilder out = new StringBuilder();
         for (Integer integer : charCode) {
             out.append(codeToChar(integer));
         }
 
+        // Count padding
         while (out.length() % 4 != 0) {
             out.append('=');
         }
 
+        // Set the output JTextArea
         taOutput.setText(out.toString());
     }
 
