@@ -1,5 +1,7 @@
 package com.ReynDev.Base64Java;
 
+import jdk.jfr.Unsigned;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -187,11 +189,9 @@ public class Main implements Runnable, ActionListener {
             bits.add(b);
         }
 
-        binaries = null;
         charCode.clear();
 
-        for (int i = 0; i < bits.size(); i++) {
-            String t = bits.get(i);
+        for (String t : bits) {
             int n = 0;
 
             for (int j = t.length() - 1; j >= 0; j--) {
@@ -203,11 +203,16 @@ public class Main implements Runnable, ActionListener {
             charCode.add(n);
         }
 
-        bits = null;
-
-        for (int i = 0; i < charCode.size(); i++) {
-            taOutput.append(String.valueOf(codeToChar(charCode.get(i))));
+        StringBuilder out = new StringBuilder();
+        for (Integer integer : charCode) {
+            out.append(codeToChar(integer));
         }
+
+        while (out.length() % 4 != 0) {
+            out.append('=');
+        }
+
+        taOutput.setText(out.toString());
     }
 
     public void decode(String text) {
