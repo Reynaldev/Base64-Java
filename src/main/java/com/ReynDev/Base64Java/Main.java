@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class Main implements Runnable, ActionListener {
     private JFrame frame;
@@ -122,6 +124,93 @@ public class Main implements Runnable, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // Encode
+        if (e.getActionCommand().equals(encodeCmd)) {
+            encode(taInput.getText());
+        }
+
+        // Decode
+        if (e.getActionCommand().equals(decodeCmd)) {
+            decode(taOutput.getText());
+        }
+    }
+
+    public char codeToChar(int c) {
+        char[] ascii = {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+                'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+                'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+        };
+
+        return ascii[c];
+    }
+
+    public void encode(String text) {
+        ArrayList<Integer> charCode = new ArrayList<>();
+
+        for (int code : text.getBytes()) {
+            charCode.add(code);
+        }
+
+        StringBuilder binaries = new StringBuilder();
+        for (Integer integer : charCode) {
+            StringBuilder b = new StringBuilder();  // Binary
+            int n = integer;                        // Elements at index
+            int r = 0;                              // Remainder
+
+            while (n > 0) {
+                r = n % 2;
+                n /= 2;
+
+                b.append(r);
+            }
+
+            while (b.length() < 8) {
+                b.append(0);
+            }
+
+            b.reverse();
+
+            binaries.append(b);
+        }
+
+
+        ArrayList<String> bits = new ArrayList<>();
+        while (binaries.length() > 0) {
+            while (binaries.length() < 6) {
+                binaries.append(0);
+            }
+
+            String b = binaries.substring(0, 6);
+            binaries.delete(0, 6);
+            bits.add(b);
+        }
+
+        binaries = null;
+        charCode.clear();
+
+        for (int i = 0; i < bits.size(); i++) {
+            String t = bits.get(i);
+            int n = 0;
+
+            for (int j = t.length() - 1; j >= 0; j--) {
+                int p = Integer.parseInt(String.valueOf(t.charAt(j)));
+                int q = t.length() - j - 1;
+                n += Math.pow(2, q) * p;
+            }
+
+            charCode.add(n);
+        }
+
+        bits = null;
+
+        for (int i = 0; i < charCode.size(); i++) {
+            taOutput.append(String.valueOf(codeToChar(charCode.get(i))));
+        }
+    }
+
+    public void decode(String text) {
 
     }
 
