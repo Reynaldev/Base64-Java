@@ -133,7 +133,7 @@ public class Main implements Runnable, ActionListener {
 
         // Decode
         if (e.getActionCommand().equals(decodeCmd)) {
-            decode(taOutput.getText());
+            decode(taInput.getText());
         }
     }
 
@@ -146,6 +146,23 @@ public class Main implements Runnable, ActionListener {
         };
 
         return ascii[c];
+    }
+
+    public int charToCode(char c) {
+        char[] ascii = {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+                'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+                'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'
+        };
+
+        for (int i = 0; i < ascii.length; i++) {
+            if (c == ascii[i]) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 
     public void encode(String text) {
@@ -218,7 +235,7 @@ public class Main implements Runnable, ActionListener {
             out.append(codeToChar(integer));
         }
 
-        // Count padding
+        // Add padding
         while (out.length() % 4 != 0) {
             out.append('=');
         }
@@ -228,7 +245,18 @@ public class Main implements Runnable, ActionListener {
     }
 
     public void decode(String text) {
+        ArrayList<Integer> charCode = new ArrayList<>();
 
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+
+            if (ch == '=')
+                continue;
+
+            charCode.add(charToCode(ch));
+        }
+
+        System.out.println(charCode);
     }
 
     public static void main(String[] args) {
