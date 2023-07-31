@@ -201,30 +201,42 @@ public class Main implements Runnable, ActionListener {
 
         // Export
         if (e.getActionCommand().equals(exportCmd)) {
+            // Instantiate JFileChooser
             JFileChooser fc = new JFileChooser();
 
+            // Set file extension
             FileNameExtensionFilter filter = new FileNameExtensionFilter(
                     "Text Document", ".txt"
             );
             fc.addChoosableFileFilter(filter);
             fc.setFileFilter(filter);
 
+            // Skip if the user cancelled the operation
             int returnVal = fc.showSaveDialog(null);
             if (returnVal == JFileChooser.CANCEL_OPTION)
                 return;
 
+            // Set file path and extension
             String[] exts = filter.getExtensions();
-            String filepath = fc.getSelectedFile() + "." + exts[0];
+            String filepath = fc.getSelectedFile() + exts[0];
 
             try {
+                // Instantiate
                 File file = new File(filepath);
                 FileWriter fw = new FileWriter(file);
-                BufferedWriter br = new BufferedWriter(fw);
+                BufferedWriter bw = new BufferedWriter(fw);
 
+                // Write the output text into the file
+                bw.write(taOutput.getText());
 
+                // Close
+                bw.close();
+                fw.close();
             } catch (FileNotFoundException ex) {
+                System.out.println("FileNotFoundException: " + ex);
                 throw new RuntimeException(ex);
             } catch (IOException ex) {
+                System.out.println("IOException: " + ex);
                 throw new RuntimeException(ex);
             }
         }
