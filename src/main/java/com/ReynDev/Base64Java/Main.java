@@ -22,7 +22,7 @@ public class Main implements Runnable, ActionListener {
     // Action commands
     private String encodeCmd = "EncodeCommand";
     private String decodeCmd = "DecodeCommand";
-    private String openCmd = "OpenCommand";
+    private String readFileCmd = "ReadFileCommand";
     private String exportCmd = "ExportCommand";
     private String exitCmd = "ExitCommand";
     private String aboutCmd = "AboutCommand";
@@ -55,7 +55,7 @@ public class Main implements Runnable, ActionListener {
 
         // File menu items
         miFileOpen = new JMenuItem("Read from file...");
-        miFileOpen.setActionCommand(openCmd);
+        miFileOpen.setActionCommand(readFileCmd);
         miFileOpen.addActionListener(this);
         menuFile.add(miFileOpen);
 
@@ -164,7 +164,7 @@ public class Main implements Runnable, ActionListener {
         }
 
         // Read
-        if (e.getActionCommand().equals(openCmd)) {
+        if (e.getActionCommand().equals(readFileCmd)) {
             // Instantiate JFileChooser
             JFileChooser fc = new JFileChooser();
 
@@ -198,7 +198,6 @@ public class Main implements Runnable, ActionListener {
 
                 // Set taInput and encode
                 taInput.read(br, file);
-                encode(taInput.getText());
 
                 // CLose
                 br.close();
